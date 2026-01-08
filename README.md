@@ -2,10 +2,16 @@
 
 为保证阅读效果，建议先阅读 README，再以复赛 PDF 作为主要浏览目标。也为了方便您浏览，文件夹首页和复赛文件夹我都上传了复赛内容，择一浏览即可。
 
+## 成果速览
+
+<p align="center"> <img src="img/成果速览.png" width="85%"> </p> <p align="center"> <b>开源仓库活跃度评估与分析系统</b> </p>
+
 
 ## 看见趋势，而不是追逐热度
 
-<p align="center"> <img src="主框图.png" width="85%"> </p> <p align="center"> <b>上下文感知的集成时序预测框架，用于刻画开源仓库的长期活跃趋势</b> </p>
+时序集成框架图
+
+<p align="center"> <img src="img/主框图.png" width="85%"> </p> <p align="center"> <b>上下文感知的集成时序预测框架，用于刻画开源仓库的长期活跃趋势</b> </p>
 
 # 🌌 为什么要做这件事？
 
