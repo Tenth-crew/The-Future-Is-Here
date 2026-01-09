@@ -1,0 +1,2 @@
+timestamp,setting,dataset,base_model_names,meta_hidden_dim,meta_dropout_rate,meta_learner_type,softmax_temperature,mae,mse,rmse,mape,mspe,dtw
+2025-09-12 15:15:01,stacking_attention_fusion__custom_kubernetes_ftM_sl84_ll84_pl84_dm512_nh8_el2_dl1_df2048_expand2_dc4_fc3_ebtimeF_dtTrue_Exp_0,kubernetes_all_roll_ewma_span28_normalize,"['PatchTST', 'Autoformer']",64,0.0,attention_fusion,1.0,0.44689655,0.37574688,0.612982,0.7451972,202.89305,-999

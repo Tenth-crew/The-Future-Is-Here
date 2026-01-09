@@ -1,0 +1,27 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>System Monitor Dashboard</title>
+    <script src="https://cdn.jsdelivr.net/npm/echarts@5.4.3/dist/echarts.min.js"></script>
+    <link rel="stylesheet" href="/static/css/style.css">
+</head>
+
+<body>
+    <div class="container">
+        <div class="left-panel">
+            {% block left_panel %}{% endblock %}
+        </div>
+
+        <div class="right-panel">
+            <iframe src="http://192.168.1.114:8080/chat/a2320648bcfa7f22" class="iframe-window"
+                title="LLM Chat"></iframe>
+        </div>
+    </div>
+
+    {% block scripts %}{% endblock %}
+</body>
+
+</html>

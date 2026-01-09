@@ -1,0 +1,2 @@
+timestamp,setting,dataset,base_model_names,meta_hidden_dim,meta_dropout_rate,meta_learner_type,softmax_temperature,mae,mse,rmse,mape,mspe,dtw
+2025-09-12 15:12:41,stacking_attention_fusion__custom_transformers_ftM_sl84_ll84_pl84_dm512_nh8_el2_dl1_df2048_expand2_dc4_fc3_ebtimeF_dtTrue_Exp_0,transformers_all_roll_ewma_span28_normalize,"['PatchTST', 'FreTS']",64,0.0,attention_fusion,1.0,0.3802359,0.2540825,0.504066,1.1578376,342.13635,-999

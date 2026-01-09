@@ -1,0 +1,227 @@
+/* filename: static/css/style.css */
+:root {
+    --bg-color: #f0f2f5;
+    --card-bg: #ffffff;
+    --text-primary: #333;
+    --text-secondary: #666;
+    --accent-color: #4a90e2;
+    /* 环绕式柔和阴影 */
+    --shadow-card: 0 4px 24px rgba(0, 0, 0, 0.08);
+    --card-radius: 16px;
+}
+
+body {
+    margin: 0;
+    font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+    background-color: var(--bg-color);
+    color: var(--text-primary);
+    overflow: hidden;
+}
+
+.container {
+    display: flex;
+    height: 100vh;
+    padding: 20px;
+    box-sizing: border-box;
+    gap: 20px;
+}
+
+.left-panel {
+    width: 40%;
+    display: flex;
+    flex-direction: column;
+    gap: 15px;
+}
+
+/* 1. 搜索区域 (10%) */
+.search-section {
+    flex: 0 0 10%;
+    position: relative;
+    display: flex;
+    align-items: center;
+    z-index: 100;
+}
+
+.search-box {
+    width: 100%;
+    background: var(--card-bg);
+    border-radius: var(--card-radius);
+    box-shadow: var(--shadow-card);
+    border: 1px solid rgba(255, 255, 255, 0.6);
+    padding: 0 20px;
+    height: 100%;
+    display: flex;
+    align-items: center;
+    box-sizing: border-box;
+}
+
+.search-input {
+    width: 100%;
+    border: none;
+    outline: none;
+    font-size: 1.1rem;
+    color: var(--text-primary);
+    background: transparent;
+}
+
+.search-results {
+    position: absolute;
+    top: 105%;
+    left: 0;
+    right: 0;
+    background: rgba(255, 255, 255, 0.98);
+    backdrop-filter: blur(10px);
+    border-radius: 12px;
+    box-shadow: 0 10px 30px rgba(0, 0, 0, 0.15);
+    max-height: 300px;
+    overflow-y: auto;
+    display: none;
+    padding: 10px;
+}
+
+.search-item {
+    padding: 10px 15px;
+    cursor: pointer;
+    border-radius: 8px;
+    transition: background 0.2s;
+    display: flex;
+    justify-content: space-between;
+}
+
+.search-item:hover {
+    background: #e6f0fa;
+}
+
+.item-score {
+    color: var(--accent-color);
+    font-weight: bold;
+}
+
+/* 2. 图表区域 */
+.chart-card {
+    flex: 1;
+    background: var(--card-bg);
+    border-radius: var(--card-radius);
+    box-shadow: var(--shadow-card);
+    padding: 10px;
+    position: relative;
+    min-height: 0;
+}
+
+/* 3. 底部轮播区域 (35%) */
+.carousel-container {
+    flex: 0 0 35%;
+    perspective: 1000px;
+    position: relative;
+}
+
+.flip-card {
+    width: 100%;
+    height: 100%;
+    position: relative;
+    transform-style: preserve-3d;
+    transition: transform 0.8s cubic-bezier(0.4, 0.2, 0.2, 1);
+    box-shadow: var(--shadow-card);
+    border-radius: var(--card-radius);
+    /* [新增] 鼠标悬停变为手型，提示可点击 */
+    cursor: pointer;
+}
+
+.flip-card.flipping {
+    transform: rotateX(180deg);
+}
+
+.card-face {
+    position: absolute;
+    width: 100%;
+    height: 100%;
+    backface-visibility: hidden;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    background: var(--card-bg);
+    border-radius: var(--card-radius);
+    padding: 20px;
+    box-sizing: border-box;
+}
+
+.card-face.back {
+    transform: rotateX(180deg);
+}
+
+/* [修改] 优化排版 */
+.score-display {
+    font-size: 4.5rem;
+    font-weight: bold;
+    color: var(--accent-color);
+    margin: 5px 0;
+    /* 减小间距，让布局更紧凑 */
+    text-shadow: 2px 2px 4px rgba(74, 144, 226, 0.1);
+    font-family: 'Segoe UI', sans-serif;
+    /* 分数保持数字字体 */
+}
+
+/* [修改] 仓库标题设计 - 学术风格 */
+.repo-title {
+    font-size: 2.2rem;
+    /* 增大字号 */
+    font-weight: 700;
+    /* 使用衬线字体 */
+    font-family: 'Times New Roman', Times, serif;
+    /* 略微倾斜增加设计感 */
+    font-style: italic;
+    color: #2c3e50;
+    text-align: center;
+    line-height: 1.2;
+}
+
+.repo-desc {
+    font-size: 1rem;
+    color: var(--text-secondary);
+    text-align: center;
+    margin-top: 5px;
+    font-family: 'Segoe UI', sans-serif;
+}
+
+/* 右侧面板 */
+.right-panel {
+    width: 60%;
+    background: var(--card-bg);
+    border-radius: var(--card-radius);
+    box-shadow: var(--shadow-card);
+    overflow: hidden;
+}
+
+.iframe-window {
+    width: 100%;
+    height: 100%;
+    border: none;
+}
+
+/* 详情页组件 */
+.metric-buttons {
+    display: flex;
+    justify-content: center;
+    gap: 10px;
+    margin-top: 10px;
+}
+
+.metric-btn {
+    padding: 8px 16px;
+    border: none;
+    border-radius: 20px;
+    background: #f0f2f5;
+    box-shadow: inset 2px 2px 5px rgba(0, 0, 0, 0.05), inset -2px -2px 5px #ffffff;
+    cursor: pointer;
+    transition: all 0.3s ease;
+    font-size: 0.85rem;
+    color: var(--text-primary);
+}
+
+.metric-btn:hover,
+.metric-btn.active {
+    background: var(--accent-color);
+    color: white;
+    box-shadow: 0 4px 10px rgba(74, 144, 226, 0.3);
+}

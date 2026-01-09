@@ -1,0 +1,2 @@
+timestamp,setting,dataset,base_model_names,meta_hidden_dim,meta_dropout_rate,meta_learner_type,softmax_temperature,mae,mse,rmse,mape,mspe,dtw
+2025-12-28 14:16:41,stacking_attention_fusion_PatchTST_Dlinear_custom_react-naive_ftM_sl84_ll84_pl84_dm512_nh8_el2_dl1_df2048_expand2_dc4_fc3_ebtimeF_dtTrue_Exp_0,react-naive_to2017end,"['PatchTST', 'DLinear']",64,0.0,attention_fusion,1.0,0.41220143,0.29302672,0.54131943,1.8497066,367.56412,-999

@@ -1,0 +1,165 @@
+{% extends "base.html" %}
+
+{% block left_panel %}
+<div class="search-section">
+    <div class="search-box">
+        <span style="font-size: 1.2rem; color: #999; margin-right: 10px;">🔍</span>
+        <input type="text" class="search-input" id="repoSearch" placeholder="Search Repository...">
+    </div>
+    <div class="search-results" id="searchResults"></div>
+</div>
+
+<div class="chart-card" id="topReposChart"></div>
+
+<div class="carousel-container">
+    <div class="flip-card" id="flipCard">
+        <div class="card-face front">
+            <div class="repo-title" id="cardTitle1">Repository</div>
+            <div class="score-display" id="cardScore1">0.0</div>
+            <div class="repo-desc" id="cardDesc1">Loading...</div>
+        </div>
+        <div class="card-face back">
+            <div class="repo-title" id="cardTitle2">Repository</div>
+            <div class="score-display" id="cardScore2">0.0</div>
+            <div class="repo-desc" id="cardDesc2">Loading...</div>
+        </div>
+    </div>
+</div>
+
+<script id="all-repos-data" type="application/json">
+        {{ all_repos | tojson | safe }}
+    </script>
+{% endblock %}
+
+{% block scripts %}
+<script>
+    // --- 0. 获取数据 ---
+    const allRepos = JSON.parse(document.getElementById('all-repos-data').textContent);
+
+    // --- 1. 搜索功能 ---
+    const searchInput = document.getElementById('repoSearch');
+    const resultsBox = document.getElementById('searchResults');
+
+    searchInput.addEventListener('keyup', (e) => {
+        const query = e.target.value.toLowerCase();
+        if (query.length < 1) {
+            resultsBox.style.display = 'none';
+            return;
+        }
+        const matches = allRepos.filter(repo =>
+            repo.repo_name.toLowerCase().includes(query)
+        );
+        if (matches.length > 0) {
+            resultsBox.innerHTML = matches.map(repo => `
+                <div class="search-item" onclick="window.location.href='/repo/${repo.repo_name}'">
+                    <span>${repo.repo_name}</span>
+                    <span class="item-score">${repo.score.toFixed(2)}</span>
+                </div>
+            `).join('');
+            resultsBox.style.display = 'block';
+        } else {
+            resultsBox.innerHTML = '<div class="search-item" style="cursor:default; color:#999;">No results found</div>';
+            resultsBox.style.display = 'block';
+        }
+    });
+
+    document.addEventListener('click', (e) => {
+        if (!searchInput.contains(e.target) && !resultsBox.contains(e.target)) {
+            resultsBox.style.display = 'none';
+        }
+    });
+
+    // --- 2. 动态柱状图逻辑 (6个仓库) ---
+    const chartDom = document.getElementById('topReposChart');
+    const myChart = echarts.init(chartDom);
+
+    function updateBarChart() {
+        const shuffled = [...allRepos].sort(() => 0.5 - Math.random());
+        // [修改] 随机选取 6 个仓库
+        let selected = shuffled.slice(0, 6);
+
+        selected.sort((a, b) => b.score - a.score);
+
+        const option = {
+            // [修改] 调整标题字号和字体
+            title: {
+                text: 'Random 6 Repos Analysis',
+                left: 'center',
+                top: 10,
+                textStyle: {
+                    fontSize: 20, // 增大标题字号
+                    fontWeight: 'bold',
+                    fontFamily: 'Segoe UI, sans-serif'
+                }
+            },
+            tooltip: { trigger: 'axis' },
+            grid: { left: '3%', right: '4%', bottom: '5%', top: '20%', containLabel: true },
+            xAxis: {
+                type: 'category',
+                data: selected.map(r => r.repo_name),
+                axisLabel: { interval: 0, rotate: 20, fontSize: 11 }
+            },
+            yAxis: { type: 'value' },
+            series: [{
+                data: selected.map(r => r.score),
+                type: 'bar',
+                barWidth: '50%', // 稍微调宽一点适应6个
+                itemStyle: {
+                    borderRadius: [5, 5, 0, 0],
+                    color: new echarts.graphic.LinearGradient(0, 0, 0, 1, [
+                        { offset: 0, color: '#4a90e2' },
+                        { offset: 1, color: '#83bff6' }
+                    ])
+                },
+                animationDuration: 1000
+            }]
+        };
+
+        myChart.setOption(option);
+
+        myChart.off('click');
+        myChart.on('click', function (params) {
+            window.location.href = `/repo/${params.name}`;
+        });
+    }
+
+    updateBarChart();
+    setInterval(updateBarChart, 10000);
+
+    // --- 3. 轮播卡片逻辑 (带点击跳转) ---
+    let cardIndex = 0;
+    let isFront = true;
+    let currentCardRepo = null; // [新增] 用于存储当前显示的仓库对象
+
+    function updateCard() {
+        const repo = allRepos[Math.floor(Math.random() * allRepos.length)];
+
+        // [新增] 更新全局当前仓库变量
+        currentCardRepo = repo;
+
+        const suffix = isFront ? '2' : '1';
+
+        document.getElementById(`cardTitle${suffix}`).innerText = repo.repo_name;
+        document.getElementById(`cardScore${suffix}`).innerText = repo.score.toFixed(2);
+        document.getElementById(`cardDesc${suffix}`).innerText = repo.description || 'No description';
+
+        const card = document.getElementById('flipCard');
+        if (isFront) card.classList.add('flipping');
+        else card.classList.remove('flipping');
+
+        isFront = !isFront;
+    }
+
+    // [新增] 卡片点击跳转事件
+    document.getElementById('flipCard').onclick = function () {
+        if (currentCardRepo) {
+            window.location.href = `/repo/${currentCardRepo.repo_name}`;
+        }
+    };
+
+    updateCard();
+    setInterval(updateCard, 10000);
+
+    window.addEventListener('resize', myChart.resize);
+</script>
+{% endblock %}

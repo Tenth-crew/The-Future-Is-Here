@@ -1,0 +1,133 @@
+{% extends "base.html" %}
+
+{% block left_panel %}
+<div class="chart-card" style="display: flex; flex-direction: column;">
+    <div id="metricsChart" style="flex: 1; min-height: 0;"></div>
+
+    <div class="metric-buttons">
+        <button class="metric-btn active" onclick="loadMetric('IssueComment')">IssueComment</button>
+        <button class="metric-btn" onclick="loadMetric('mergePR')">MergePR</button>
+        <button class="metric-btn" onclick="loadMetric('openIssue')">OpenIssue</button>
+        <button class="metric-btn" onclick="loadMetric('OpenPR')">OpenPR</button>
+        <button class="metric-btn" onclick="loadMetric('ReviewComment')">ReviewComment</button>
+    </div>
+</div>
+
+<div class="carousel-container" style="perspective: none;">
+    <div class="chart-card"
+        style="display: flex; flex-direction: column; align-items: center; justify-content: center; height: 100%; box-shadow: var(--shadow-card);">
+        <div class="repo-title">{{ repo.repo_name }}</div>
+        <div class="score-display">{{ "%.2f"|format(repo.score) }}</div>
+        <div class="repo-desc">{{ repo.description }}</div>
+    </div>
+</div>
+{% endblock %}
+
+{% block scripts %}
+<script>
+    const repoName = "{{ repo.repo_name }}";
+    const chartDom = document.getElementById('metricsChart');
+    let myChart = echarts.init(chartDom);
+
+    async function loadMetric(metricType) {
+        document.querySelectorAll('.metric-btn').forEach(btn => {
+            btn.classList.remove('active');
+            if (btn.innerText.toLowerCase() === metricType.toLowerCase()) {
+                btn.classList.add('active');
+            }
+        });
+
+        myChart.showLoading({
+            text: 'Loading...', color: '#4a90e2', textColor: '#000',
+            maskColor: 'rgba(255, 255, 255, 0.8)', zlevel: 0
+        });
+
+        try {
+            const response = await fetch(`/api/metrics/${repoName}/${metricType}`);
+            let data = await response.json();
+
+            // [新增] 数据缝合逻辑：解决断点问题
+            // 获取 History 的最后一个点
+            if (data.history && data.history.length > 0) {
+                const lastHistoryPoint = data.history[data.history.length - 1];
+
+                // 如果有 Actual 数据，将 History 的最后一点加到 Actual 开头
+                if (data.actual && data.actual.length > 0) {
+                    // 检查是否已经存在（防止重复添加）
+                    if (data.actual[0].date !== lastHistoryPoint.date) {
+                        data.actual.unshift(lastHistoryPoint);
+                    }
+                }
+
+                // 如果有 Prediction 数据，同理
+                if (data.prediction && data.prediction.length > 0) {
+                    if (data.prediction[0].date !== lastHistoryPoint.date) {
+                        data.prediction.unshift(lastHistoryPoint);
+                    }
+                }
+            }
+
+            // 重新收集所有日期 (缝合后 actual/prediction 多了一个点，日期需要重新合并)
+            const historyDates = data.history.map(item => item.date);
+            const actualDates = data.actual.map(item => item.date);
+            const predDates = data.prediction.map(item => item.date);
+            const allDates = [...new Set([...historyDates, ...actualDates, ...predDates])].sort();
+
+            const option = {
+                title: { text: `${metricType} Analysis`, left: 'left' },
+                tooltip: { trigger: 'axis' },
+                legend: { data: ['History', 'Actual', 'Prediction'] },
+                grid: { left: '3%', right: '4%', bottom: '3%', top: '15%', containLabel: true },
+                xAxis: {
+                    type: 'category',
+                    boundaryGap: false,
+                    data: allDates
+                },
+                yAxis: { type: 'value', scale: true },
+                series: [
+                    {
+                        name: 'History',
+                        type: 'line',
+                        data: mapDataToAxis(allDates, data.history),
+                        itemStyle: { color: '#91cc75' },
+                        smooth: true
+                    },
+                    {
+                        name: 'Actual',
+                        type: 'line',
+                        data: mapDataToAxis(allDates, data.actual),
+                        itemStyle: { color: '#5470c6' },
+                        lineStyle: { width: 3 },
+                        // 确保连接处也是平滑或直线，这里设为 false 保证精准，如果想要平滑可设为 true
+                        smooth: false
+                    },
+                    {
+                        name: 'Prediction',
+                        type: 'line',
+                        data: mapDataToAxis(allDates, data.prediction),
+                        itemStyle: { color: '#ee6666' },
+                        lineStyle: { type: 'dashed', width: 2 },
+                        smooth: false
+                    }
+                ]
+            };
+
+            myChart.hideLoading();
+            myChart.setOption(option, true);
+
+        } catch (error) {
+            console.error('Error fetching data:', error);
+            myChart.hideLoading();
+        }
+    }
+
+    function mapDataToAxis(allDates, sourceData) {
+        const map = {};
+        sourceData.forEach(item => map[item.date] = item.value);
+        return allDates.map(date => map[date] !== undefined ? map[date] : null);
+    }
+
+    loadMetric('IssueComment');
+    window.addEventListener('resize', myChart.resize);
+</script>
+{% endblock %}

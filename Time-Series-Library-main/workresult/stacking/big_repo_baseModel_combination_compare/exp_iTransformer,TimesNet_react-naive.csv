@@ -1,0 +1,2 @@
+timestamp,setting,dataset,base_model_names,meta_hidden_dim,meta_dropout_rate,meta_learner_type,softmax_temperature,mae,mse,rmse,mape,mspe,dtw
+2025-09-12 15:17:53,stacking_attention_fusion__custom_react-naive_ftM_sl84_ll84_pl84_dm512_nh8_el2_dl1_df2048_expand2_dc4_fc3_ebtimeF_dtTrue_Exp_0,react-naive_all_roll_ewma_span28_normalize,"['iTransformer', 'TimesNet']",64,0.0,attention_fusion,1.0,0.41319734,0.3572771,0.5977266,4.620104,21489.527,-999
