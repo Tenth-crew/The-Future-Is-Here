@@ -2,6 +2,8 @@
 
 为保证阅读效果，建议先阅读 README，再以复赛 PDF 作为主要浏览目标( GitHub 上 PDF 可在线浏览)。也为了方便您浏览，文件夹首页和复赛文件夹我都上传了复赛内容，择一浏览即可。
 
+项目工程代码存放在 Time-Series-Library-main 文件夹中。
+
 ## 成果速览
 
 <p align="center"> <img src="img/成果速览.png" width="85%"> </p> <p align="center"> <b>开源仓库活跃度评估与分析系统</b> </p>
@@ -10,7 +12,7 @@
 
 **Step 1: 准备环境 🛠️**
 
-打开文件夹后，别忘了先运行一下命令安装好必须的包：
+打开 Time-Series-Library-main 文件夹后，先运行一下命令安装好必须的包：
 
 pip install -r requirements.txt
 
