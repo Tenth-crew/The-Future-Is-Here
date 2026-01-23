@@ -19,7 +19,7 @@ pip install -r requirements.txt
 **Step 2: 训练模型 🏋️‍♂️**
 
 请确保你的设备已准备好 CUDA 环境 🟢。
-接着，去 scripts 文件夹里找到对应的脚本，通过 bash 运行起来，生成所需的离线数据。
+接着，去 scripts 文件夹里找到对应的脚本，通过 bash 运行，生成所需的离线数据。
 
 **Step 3: 启动系统 🖥️**
 
